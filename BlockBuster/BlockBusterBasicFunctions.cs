@@ -17,7 +17,7 @@ namespace BlockBuster
         {
             using (var db = new SE407_BlockBusterContext())
             {
-                return db.Movies.ToList();
+                return db.Movies.Include(m => m.Director).Include(m => m.Genre).ToList();
             }
         }
 
@@ -59,6 +59,63 @@ namespace BlockBuster
             using (var db = new SE407_BlockBusterContext())
             {
                 return db.Movies.FirstOrDefault(m => m.Title == title);
+            }
+        }
+
+
+        public static List<Movie> ExecuteQuery(string outputType, params string[] userOption)
+        {
+            switch (outputType)
+            {
+                case "GetMovieById":
+                    if (userOption.Length == 1 && int.TryParse(userOption[0], out int id))
+                    {
+                        return new List<Movie> { GetMovieById(id) };
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Option for GetMovieById.");
+                        return new List<Movie>();
+                    }
+                case "GetAllMovies":
+                    return GetAllMovies();
+
+                case "GetAllMoviesByGenre":
+                    if (userOption.Length == 1)
+                    {
+                        return GetAllMoviesByGenre(userOption[0]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Option for GetAllMoviesByGenre.");
+                        return new List<Movie>();
+                    }
+
+                case "GetAllMoviesByDirectorLastName":
+                    if (userOption.Length == 1)
+                    {
+                        return GetAllMoviesByDirectorLastName(userOption[0]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Option for GetAllMoviesByDirectorLastName.");
+                        return new List<Movie>();
+                    }
+
+                case "GetMovieByTitle":
+                    if (userOption.Length == 1)
+                    {
+                        return new List<Movie> { GetMovieByTitle(userOption[0]) };
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Option for GetMovieByTitle.");
+                        return new List<Movie>();
+                    }
+
+                default:
+                    Console.WriteLine("Invalid method.");
+                    return new List<Movie>();
             }
         }
 
