@@ -54,6 +54,18 @@ namespace BlockBuster
             }
         }
 
+        public static List<Movie> GetAllMoviesFull()
+        {
+            using (var db = new SE407_BlockBusterContext())
+            {
+                var movies = db.Movies
+                    .Include(movies => movies.Director)
+                    .Include(movies => movies.Genre)
+                    .ToList();
+                return movies;
+            }
+        }
+
         public static Movie GetMovieByTitle(string title)
         {
             using (var db = new SE407_BlockBusterContext())
@@ -119,6 +131,34 @@ namespace BlockBuster
             }
         }
 
+        public static Movie GetFullMovieById(int id)
+        {
+            using (var db = new SE407_BlockBusterContext())
+            {
+                var movie = db.Movies
+                    .Include(m => m.Director)
+                    .Include(m => m.Genre)
+                    .Where(m => m.MovieId == id)
+                    .FirstOrDefault();
+                return movie;
+            }
+        }
+
+        public static List<Genre> GetAllGenres()
+        {
+            using (var db = new SE407_BlockBusterContext())
+            {
+                return db.Genres.ToList();
+            }
+        }
+
+        public static List<Director> GetAllDirectors()
+        {
+            using (var db = new SE407_BlockBusterContext())
+            {
+                return db.Directors.ToList();
+            }
+        }
 
     }
 }
